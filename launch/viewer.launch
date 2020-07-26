@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <node pkg="ros_my_costmap" type="viewer.py" name="viewer" output="screen">
+
+        <param name="costmap" value="/move_base/local_costmap/costmap" />
+        <param name="cmd_vel" value="/cmd_vel" />
+
+    </node>
+
+</launch>

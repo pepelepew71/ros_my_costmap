@@ -147,7 +147,7 @@ class Viewer:
 
 def cb_costmap(msg):
     """
-    Callback for /move_base/local_costmap/costmap .
+    Callback for topic costmap.
     """
     global DATA, INFO
     INFO = msg.info
@@ -155,7 +155,7 @@ def cb_costmap(msg):
 
 def cb_cmdvel(msg):
     """
-    Callback for /cmd_vel .
+    Callback for topic cmd_vel.
     """
     global VX, WZ
     VX = msg.linear.x
@@ -166,14 +166,18 @@ if __name__ == "__main__":
     # -- global vars
     INFO = None
     DATA = None
-    ORIENTATION = [0, 0, 0, 0]
-    VX = 0.0  # m/s of car
-    WZ = 0.0  # rad/s of car
+    ORIENTATION = [0, 0, 0, 0]  # quaternion
+    VX = 0.0  # m/s
+    WZ = 0.0  # rad/s
 
-    # -- rosnode function
+    # -- ros node and params
     rospy.init_node(name="viewer", anonymous=False)
-    rospy.Subscriber(name="/move_base/local_costmap/costmap", data_class=OccupancyGrid, callback=cb_costmap)
-    rospy.Subscriber(name="/cmd_vel", data_class=Twist, callback=cb_cmdvel)
+    top_costmap = rospy.get_param(param_name="~costmap", default="/move_base/local_costmap/costmap")
+    top_cmd = rospy.get_param(param_name="~cmd_vel", default="/cmd_vel")
+
+    # -- ros function
+    rospy.Subscriber(name=top_costmap, data_class=OccupancyGrid, callback=cb_costmap)
+    rospy.Subscriber(name=top_cmd, data_class=Twist, callback=cb_cmdvel)
 
     # -- get car orientation and save to ORIENTATION
     tf_listener = TfListener()
